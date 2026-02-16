@@ -25,11 +25,16 @@ const links = [
   left: 0;
   right: 0;
   z-index: 100;
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  /* Safe area para iPhones con home indicator */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .bottom-nav-line {
   height: 1px;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.15);
   width: 100%;
 }
 
@@ -39,7 +44,7 @@ const links = [
   align-items: center;
   gap: 0;
   padding: 0 28px;
-  height: 44px;
+  height: 52px;
 }
 
 .bottom-nav-link {
@@ -49,9 +54,13 @@ const links = [
   letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
-  padding: 0 20px 0 0;
+  padding: 14px 20px 14px 0;
   display: block;
   transition: color 200ms ease;
+  /* Área táctil mínima recomendada */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 .bottom-nav-link:hover {
@@ -62,10 +71,12 @@ const links = [
   .bottom-nav-list {
     padding: 0 16px;
     justify-content: space-between;
+    height: 56px;
   }
   .bottom-nav-link {
-    padding: 0;
+    padding: 16px 8px;
     font-size: 10px;
+    letter-spacing: 1.5px;
   }
 }
 </style>
