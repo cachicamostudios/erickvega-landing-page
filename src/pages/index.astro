@@ -178,6 +178,16 @@ import Menu from '../components/Menu.astro';
   background-clip: text;
 }
 
+@media (max-width: 768px) {
+  .hero-name-line,
+  .hero-name-line.noise-ready {
+    color: #ffffff !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    background-image: none !important;
+  }
+}
+
 .hero-asterisk {
   color: #ff5c00;
   -webkit-background-clip: unset;
