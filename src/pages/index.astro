@@ -141,16 +141,35 @@ import Menu from '../components/Menu.astro';
   animation-delay: 200ms;
   width: 100%;
 }
+
+.hero-noise-canvas {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-name-line {
+  position: relative;
+  z-index: 1;
+}
 .hero-name-line {
   display: block;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(140px, 28vw, 600px);
   font-weight: 900;
   letter-spacing: -6px;
-  color: rgba(255, 255, 255, 0.75);
   text-transform: uppercase;
   line-height: 0.82;
   white-space: nowrap;
+  /* noise dentro del texto */
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-size: 256px 256px;
+  position: relative;
 }
 
 /* ─── Philosophy ─── */
@@ -252,6 +271,33 @@ import Menu from '../components/Menu.astro';
 </style>
 
 <script>
+  // ─── Hero text noise ───
+  const offscreen = document.createElement('canvas');
+  offscreen.width  = 256;
+  offscreen.height = 256;
+  const offCtx = offscreen.getContext('2d')!;
+  const lines = document.querySelectorAll<HTMLElement>('.hero-name-line');
+
+  function drawHeroNoise() {
+    const imageData = offCtx.createImageData(256, 256);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const v = 180 + (Math.random() * 35 | 0);
+      data[i]     = v;
+      data[i + 1] = v;
+      data[i + 2] = v;
+      data[i + 3] = 255;
+    }
+    offCtx.putImageData(imageData, 0, 0);
+    const dataURL = offscreen.toDataURL();
+    lines.forEach(el => {
+      el.style.backgroundImage = `url(${dataURL})`;
+    });
+    requestAnimationFrame(drawHeroNoise);
+  }
+
+  drawHeroNoise();
+
   // ─── White noise canvas ───
   const canvas = document.querySelector('.noise-canvas') as HTMLCanvasElement;
   if (canvas) {
