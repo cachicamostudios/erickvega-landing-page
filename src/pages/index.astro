@@ -27,7 +27,7 @@ import Menu from '../components/Menu.astro';
 
     <div class="hero-name">
       <span class="hero-name-line">ERICK</span>
-      <span class="hero-name-line">VEGA</span>
+      <span class="hero-name-line">VEGA<span class="hero-asterisk">*</span></span>
     </div>
   </section>
 
@@ -170,6 +170,13 @@ import Menu from '../components/Menu.astro';
   background-clip: text;
   background-size: 256px 256px;
   position: relative;
+}
+
+.hero-asterisk {
+  color: #ff5c00;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  background-image: none !important;
 }
 
 /* ─── Philosophy ─── */
