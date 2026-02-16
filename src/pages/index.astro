@@ -165,12 +165,17 @@ import Menu from '../components/Menu.astro';
   text-transform: uppercase;
   line-height: 0.85;
   white-space: nowrap;
-  /* noise dentro del texto */
+  /* fallback visible hasta que JS cargue el noise */
+  color: #e8e8e8;
+  background-size: 256px 256px;
+  position: relative;
+}
+
+/* solo activar clip cuando JS haya seteado el background-image */
+.hero-name-line.noise-ready {
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
-  background-size: 256px 256px;
-  position: relative;
 }
 
 .hero-asterisk {
@@ -290,6 +295,8 @@ import Menu from '../components/Menu.astro';
   const offCtx = offscreen.getContext('2d')!;
   const lines = document.querySelectorAll<HTMLElement>('.hero-name-line');
 
+  let noiseReady = false;
+
   function drawHeroNoise() {
     const imageData = offCtx.createImageData(256, 256);
     const data = imageData.data;
@@ -304,7 +311,11 @@ import Menu from '../components/Menu.astro';
     const dataURL = offscreen.toDataURL();
     lines.forEach(el => {
       el.style.backgroundImage = `url(${dataURL})`;
+      if (!noiseReady) {
+        el.classList.add('noise-ready');
+      }
     });
+    if (!noiseReady) noiseReady = true;
     requestAnimationFrame(drawHeroNoise);
   }
 
