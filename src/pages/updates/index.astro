@@ -1,0 +1,193 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const updates = (await getCollection('updates', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="Updates — proyecto-unknown">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="/" class="topbar-back">← Volver</a>
+    </div>
+  </div>
+
+  <main class="updates-main grid-unk">
+    <header class="updates-header">
+      <p class="updates-label">Updates</p>
+    </header>
+
+    {updates.length === 0 ? (
+      <p class="updates-empty">Próximamente.</p>
+    ) : (
+      <div class="updates-grid">
+        {updates.map(async (update) => {
+          const { Content } = await update.render();
+          const dateStr = update.data.date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          return (
+            <article class="update-card">
+              <time class="update-date">{dateStr}</time>
+              <div class="update-body">
+                <Content />
+              </div>
+              {update.data.images && update.data.images.length > 0 && (
+                <div class={`update-images update-images--${Math.min(update.data.images.length, 3)}`}>
+                  {update.data.images.map((src) => (
+                    <img src={src} alt="" class="update-img" loading="lazy" />
+                  ))}
+                </div>
+              )}
+            </article>
+          );
+        })}
+      </div>
+    )}
+  </main>
+</Layout>
+
+<style>
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 20px 28px;
+}
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.topbar-back {
+  font-family: 'acumin-pro', 'Helvetica Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 200ms ease;
+}
+.topbar-back:hover { color: #fff; }
+
+.updates-main {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  min-height: 100vh;
+  align-content: start;
+}
+
+.updates-header {
+  grid-column: span 12;
+  margin-bottom: 48px;
+}
+
+.updates-label {
+  font-family: 'freight-display-pro', Georgia, serif;
+  font-size: clamp(18px, 2.5vw, 32px);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.updates-empty {
+  grid-column: span 12;
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(24px, 3vw, 48px);
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ─── Grid de tarjetas ─── */
+.updates-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ─── Tarjeta ─── */
+.update-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color 200ms ease;
+}
+
+.update-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.update-date {
+  font-family: 'acumin-pro', 'Helvetica Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.update-body {
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.update-body p { margin: 0; }
+.update-body p + p { margin-top: 12px; }
+
+/* ─── Imágenes ─── */
+.update-images {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.update-images--1 {
+  grid-template-columns: 1fr;
+}
+.update-images--2 {
+  grid-template-columns: 1fr 1fr;
+}
+.update-images--3 {
+  grid-template-columns: 1fr 1fr;
+}
+.update-images--3 .update-img:first-child {
+  grid-column: span 2;
+}
+
+.update-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .updates-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar { padding: 16px; }
+  .updates-main { padding-top: 80px; }
+  .updates-header { grid-column: span 4; }
+  .updates-grid {
+    grid-column: span 4;
+    grid-template-columns: 1fr;
+  }
+}
+</style>

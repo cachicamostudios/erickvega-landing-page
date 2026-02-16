@@ -1,0 +1,299 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Menu from '../components/Menu.astro';
+---
+
+<Layout title="erickvega.xyz">
+  <Menu />
+
+  <!-- ─── SECTION 0: Header top bar ─── -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span></span>
+      <a href="https://cachicamo.studio" target="_blank" rel="noreferrer" class="topbar-logo">
+        <img src="/cachicamo-logo.png" alt="cachicamo.studio" class="cachicamo-logo" />
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-video-wrap">
+      <video autoplay muted loop playsinline class="hero-video">
+        <source src="/video/hero.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-name">
+      <span class="hero-name-line">ERICK</span>
+      <span class="hero-name-line">VEGA</span>
+    </div>
+  </section>
+
+
+  <!-- ─── PHILOSOPHY ─── -->
+  <section class="section-philosophy">
+    <canvas class="noise-canvas" aria-hidden="true"></canvas>
+    <div class="philosophy-content grid-unk">
+      <div class="philosophy-inner">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">
+          We work with people building long-term digital presence.<br />
+          Not for quick launches. Not for trends.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="grid-unk footer-inner">
+      <div class="footer-copy">
+        <p>© 2025 erickvega.xyz</p>
+      </div>
+    </div>
+  </footer>
+
+</Layout>
+
+<style>
+
+/* ─── Top bar ─── */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 20px 28px;
+}
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.topbar-title {
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  color: #fff;
+  text-transform: lowercase;
+  animation: fadeIn 800ms ease forwards;
+  opacity: 0;
+  animation-delay: 100ms;
+}
+.topbar-title a { color: inherit; }
+.topbar-logo {
+  display: block;
+  opacity: 0.6;
+  transition: opacity 250ms ease;
+}
+.topbar-logo:hover {
+  opacity: 1;
+}
+.cachicamo-logo {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+/* ─── Hero ─── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-video-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px) brightness(0.85);
+  transform: scale(1.05);
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+.hero-name {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 2vw;
+  animation: fadeIn 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+  animation-delay: 200ms;
+  width: 100%;
+}
+.hero-name-line {
+  display: block;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(140px, 28vw, 600px);
+  font-weight: 900;
+  letter-spacing: -6px;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  line-height: 0.82;
+  white-space: nowrap;
+}
+
+/* ─── Philosophy ─── */
+.section-philosophy {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #f5f4f0;
+}
+
+.noise-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.philosophy-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.philosophy-inner {
+  grid-column: span 10;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.philosophy-label {
+  font-family: 'freight-display-pro', Georgia, serif;
+  font-size: clamp(18px, 2.5vw, 32px);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.philosophy-text {
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(28px, 4.5vw, 68px);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: #0a0a0a;
+}
+
+@media (max-width: 768px) {
+  .philosophy-inner {
+    grid-column: span 4;
+    gap: 20px;
+  }
+  .philosophy-text {
+    letter-spacing: -0.5px;
+  }
+}
+
+/* ─── Footer ─── */
+.footer {
+  padding: 32px 0 40px;
+}
+.footer-inner {
+  align-items: center;
+}
+.footer-copy {
+  grid-column: span 12;
+  text-align: right;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.3);
+}
+.footer-right {
+  grid-column: span 6;
+  text-align: right;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+.footer-right a:hover { color: rgba(255,255,255,0.7); }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .topbar { padding: 16px; }
+  .hero-content { left: 16px; bottom: 40px; }
+  .hero-heading { letter-spacing: -1px; }
+
+  .info-col-label { grid-column: span 4; margin-bottom: 12px; }
+  .info-col-spacer { display: none; }
+  .info-col-content { grid-column: span 4; }
+
+  .footer-copy,
+  .footer-right { grid-column: span 4; text-align: left; }
+  .footer-right { margin-top: 8px; }
+}
+</style>
+
+<script>
+  // ─── White noise canvas ───
+  const canvas = document.querySelector('.noise-canvas') as HTMLCanvasElement;
+  if (canvas) {
+    const ctx = canvas.getContext('2d')!;
+    let animId: number;
+
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+    function drawNoise() {
+      const w = canvas.width;
+      const h = canvas.height;
+      const imageData = ctx.createImageData(w, h);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const v = Math.random() * 255 | 0;
+        data[i]     = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      animId = requestAnimationFrame(drawNoise);
+    }
+
+    // Solo animar cuando la sección es visible (performance)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          resize();
+          drawNoise();
+        } else {
+          cancelAnimationFrame(animId);
+        }
+      });
+    }, { threshold: 0.01 });
+
+    observer.observe(canvas.closest('.section-philosophy')!);
+    window.addEventListener('resize', resize);
+  }
+</script>

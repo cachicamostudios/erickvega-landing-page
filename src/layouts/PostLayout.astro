@@ -1,0 +1,138 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  date: Date;
+  description?: string;
+}
+
+const { title, date, description } = Astro.props;
+
+const dateStr = date.toLocaleDateString('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout title={`${title} — proyecto-unknown`} description={description}>
+  <div class="post-topbar">
+    <a href="/blog" class="post-back">← Blog</a>
+  </div>
+
+  <article class="post grid-unk">
+    <header class="post-header">
+      <time class="post-date">{dateStr}</time>
+      <h1 class="post-title">{title}</h1>
+    </header>
+    <div class="post-body">
+      <slot />
+    </div>
+  </article>
+</Layout>
+
+<style>
+.post-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 20px 28px;
+}
+
+.post-back {
+  font-family: 'acumin-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 200ms ease;
+}
+
+.post-back:hover {
+  color: #fff;
+}
+
+.post {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  min-height: 100vh;
+}
+
+.post-header {
+  grid-column: span 8;
+  margin-bottom: 64px;
+}
+
+.post-date {
+  display: block;
+  font-family: 'acumin-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 24px;
+}
+
+.post-title {
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(36px, 5vw, 80px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+  color: #f0f0f0;
+}
+
+.post-body {
+  grid-column: span 8;
+  font-family: 'freight-display-pro', Georgia, serif;
+  font-size: clamp(17px, 1.5vw, 22px);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.post-body p { margin-bottom: 1.5em; }
+.post-body h2 {
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(24px, 3vw, 42px);
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  color: #f0f0f0;
+  margin: 2em 0 0.75em;
+}
+.post-body h3 {
+  font-family: 'acumin-pro', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin: 2em 0 0.5em;
+}
+.post-body a {
+  color: #f0f0f0;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  transition: border-color 200ms ease;
+}
+.post-body a:hover { border-color: #fff; }
+.post-body blockquote {
+  border-left: 2px solid rgba(255,255,255,0.15);
+  padding-left: 24px;
+  margin: 2em 0;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+}
+.post-body hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 3em 0;
+}
+
+@media (max-width: 768px) {
+  .post-topbar { padding: 16px; }
+  .post { padding-top: 80px; }
+  .post-header,
+  .post-body { grid-column: span 4; }
+}
+</style>

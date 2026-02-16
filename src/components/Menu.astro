@@ -1,0 +1,71 @@
+---
+const links = [
+  { label: "Reel",      href: "#reel" },
+  { label: "Blog",      href: "/blog" },
+  { label: "Updates",   href: "/updates" },
+  { label: "Contacto",  href: "https://matrix.to/#/@erickvega:matrix.org" },
+];
+---
+
+<nav class="bottom-nav" aria-label="Navegación principal">
+  <div class="bottom-nav-line"></div>
+  <ul class="bottom-nav-list">
+    {links.map((l) => (
+      <li>
+        <a href={l.href} class="bottom-nav-link">{l.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.bottom-nav-line {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  width: 100%;
+}
+
+.bottom-nav-list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 28px;
+  height: 44px;
+}
+
+.bottom-nav-link {
+  font-family: 'acumin-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0 20px 0 0;
+  display: block;
+  transition: color 200ms ease;
+}
+
+.bottom-nav-link:hover {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .bottom-nav-list {
+    padding: 0 16px;
+    justify-content: space-between;
+  }
+  .bottom-nav-link {
+    padding: 0;
+    font-size: 10px;
+  }
+}
+</style>

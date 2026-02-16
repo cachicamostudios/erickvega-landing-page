@@ -1,0 +1,164 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="Blog — proyecto-unknown">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="/" class="topbar-back">← Volver</a>
+    </div>
+  </div>
+
+  <main class="blog-main grid-unk">
+    <header class="blog-header">
+      <p class="blog-label">Blog</p>
+    </header>
+
+    {posts.length === 0 ? (
+      <p class="blog-empty">Próximamente.</p>
+    ) : (
+      <ul class="blog-list">
+        {posts.map((post) => {
+          const dateStr = post.data.date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          return (
+            <li class="blog-item">
+              <a href={`/blog/${post.slug}`} class="blog-link">
+                <time class="blog-date">{dateStr}</time>
+                <span class="blog-title">{post.data.title}</span>
+                {post.data.description && (
+                  <span class="blog-desc">{post.data.description}</span>
+                )}
+              </a>
+              <hr class="blog-divider" />
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </main>
+</Layout>
+
+<style>
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 20px 28px;
+}
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.topbar-back {
+  font-family: 'acumin-pro', 'Helvetica Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 200ms ease;
+}
+.topbar-back:hover { color: #fff; }
+
+.blog-main {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  min-height: 100vh;
+}
+
+.blog-header {
+  grid-column: span 12;
+  margin-bottom: 64px;
+}
+
+.blog-label {
+  font-family: 'freight-display-pro', Georgia, serif;
+  font-size: clamp(18px, 2.5vw, 32px);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.blog-empty {
+  grid-column: span 12;
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(24px, 3vw, 48px);
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+}
+
+.blog-list {
+  grid-column: span 10;
+  list-style: none;
+}
+
+.blog-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 0;
+}
+
+.blog-link {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  grid-template-rows: auto auto;
+  gap: 0 32px;
+  align-items: baseline;
+  padding: 28px 0;
+  transition: opacity 200ms ease;
+}
+
+.blog-link:hover { opacity: 0.6; }
+
+.blog-date {
+  font-family: 'acumin-pro', 'Helvetica Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  grid-row: 1;
+}
+
+.blog-title {
+  font-family: 'canela', Georgia, serif;
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  color: #f0f0f0;
+  grid-row: 1;
+}
+
+.blog-desc {
+  font-family: 'freight-display-pro', Georgia, serif;
+  font-size: clamp(14px, 1.2vw, 16px);
+  color: rgba(255,255,255,0.4);
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .topbar { padding: 16px; }
+  .blog-main { padding-top: 80px; }
+  .blog-header { grid-column: span 4; }
+  .blog-list { grid-column: span 4; }
+  .blog-link {
+    grid-template-columns: 1fr;
+    gap: 8px 0;
+  }
+  .blog-title { grid-row: 2; }
+  .blog-date { grid-row: 1; }
+  .blog-desc { grid-column: 1; grid-row: 3; }
+}
+</style>
