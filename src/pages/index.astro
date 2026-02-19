@@ -105,7 +105,7 @@ import Menu from '../components/Menu.astro';
   width: 100%;
   height: 100vh;
   min-height: 600px;
-  overflow: hidden;
+  overflow: clip;
   background: #111;
   display: flex;
   align-items: center;
@@ -135,12 +135,12 @@ import Menu from '../components/Menu.astro';
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-left: clamp(16px, 4vw, 28px);
+  padding-left: 28px;
   animation: fadeIn 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   opacity: 0;
   animation-delay: 200ms;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-noise-canvas {
@@ -159,16 +159,19 @@ import Menu from '../components/Menu.astro';
 .hero-name-line {
   display: block;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 24vw;
   font-size: clamp(80px, 24vw, 600px);
   font-weight: 900;
   letter-spacing: clamp(-2px, -0.04em, -6px);
   text-transform: uppercase;
-  line-height: 0.85;
+  line-height: 0.88;
   white-space: nowrap;
   /* fallback visible hasta que JS cargue el noise */
   color: #e8e8e8;
   background-size: 256px 256px;
   position: relative;
+  overflow: visible;
+  -webkit-text-size-adjust: none;
 }
 
 /* solo activar clip cuando JS haya seteado el background-image */
@@ -176,6 +179,17 @@ import Menu from '../components/Menu.astro';
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
+}
+
+/* Safari: deshabilitar background-clip text (no funciona con canvas dinámico) */
+@supports (-webkit-touch-callout: none) {
+  .hero-name-line,
+  .hero-name-line.noise-ready {
+    color: #e8e8e8 !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    background-image: none !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -299,6 +313,7 @@ import Menu from '../components/Menu.astro';
 
 <script>
   // ─── Hero text noise ───
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   const offscreen = document.createElement('canvas');
   offscreen.width  = 256;
   offscreen.height = 256;
@@ -320,9 +335,11 @@ import Menu from '../components/Menu.astro';
     offCtx.putImageData(imageData, 0, 0);
     const dataURL = offscreen.toDataURL();
     lines.forEach(el => {
-      el.style.backgroundImage = `url(${dataURL})`;
-      if (!noiseReady) {
-        el.classList.add('noise-ready');
+      if (!isSafari) {
+        el.style.backgroundImage = `url(${dataURL})`;
+        if (!noiseReady) {
+          el.classList.add('noise-ready');
+        }
       }
     });
     if (!noiseReady) noiseReady = true;
