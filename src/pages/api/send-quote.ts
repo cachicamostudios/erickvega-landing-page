@@ -206,8 +206,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const resend = new Resend(apiKey);
 
   const subject = normalizedLang === 'en'
-    ? 'Erick Vega — Pricing Guide & Project Conditions'
-    : 'Erick Vega — Tabela de Preços e Condições';
+    ? 'Your inquiry — Erick Vega, Filmmaker'
+    : 'Obrigado pelo teu contacto — Erick Vega';
 
   const fromAddress = cfEnv['RESEND_FROM'] ?? import.meta.env.RESEND_FROM ?? 'Erick Vega <onboarding@resend.dev>';
 
