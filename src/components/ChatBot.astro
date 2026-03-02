@@ -29,6 +29,11 @@
       <p class="chat-header-name">Frame</p>
       <p class="chat-header-status">Assistente de Erick Vega</p>
     </div>
+    <button id="chat-header-close" class="chat-header-close" aria-label="Fechar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
   </div>
   <div id="chat-messages" class="chat-messages"></div>
   <div id="chat-options" class="chat-options"></div>
@@ -332,6 +337,24 @@
 .chat-send-btn:active  { opacity: 0.75; }
 .chat-send-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
 
+/* ─── Header close button (mobile only) ─── */
+.chat-header-close {
+  display: none;
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--chat-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  transition: color 150ms ease, background 150ms ease;
+}
+.chat-header-close:hover {
+  color: var(--chat-text);
+  background: rgba(255,255,255,0.06);
+}
+
 /* ─── Responsive mobile ─── */
 @media (max-width: 480px) {
   .chat-panel {
@@ -342,7 +365,8 @@
     max-height: 72vh;
   }
   .chat-toggle { right: 18px; }
-  .chat-toggle.is-open { right: auto; left: 18px; }
+  .chat-toggle.is-open { display: none; }
+  .chat-header-close { display: flex; align-items: center; justify-content: center; }
   .chat-teaser { right: 82px; font-size: 11.5px; padding: 7px 12px; }
 }
 </style>
@@ -425,13 +449,16 @@ let flow: Record<string, Step> = flowPT;
 
 // ─── DOM refs ────────────────────────────────────────────────────────────────
 
-const toggle   = document.getElementById("chat-toggle")   as HTMLButtonElement;
-const panel    = document.getElementById("chat-panel")    as HTMLDivElement;
-const messages = document.getElementById("chat-messages") as HTMLDivElement;
-const optWrap  = document.getElementById("chat-options")  as HTMLDivElement;
-const teaser   = document.getElementById("chat-teaser")   as HTMLDivElement;
-const iconOpen  = toggle.querySelector(".chat-icon-open")  as HTMLElement;
-const iconClose = toggle.querySelector(".chat-icon-close") as HTMLElement;
+const toggle      = document.getElementById("chat-toggle")       as HTMLButtonElement;
+const panel       = document.getElementById("chat-panel")        as HTMLDivElement;
+const messages    = document.getElementById("chat-messages")     as HTMLDivElement;
+const optWrap     = document.getElementById("chat-options")      as HTMLDivElement;
+const teaser      = document.getElementById("chat-teaser")       as HTMLDivElement;
+const headerClose = document.getElementById("chat-header-close") as HTMLButtonElement;
+const iconOpen    = toggle.querySelector(".chat-icon-open")      as HTMLElement;
+const iconClose   = toggle.querySelector(".chat-icon-close")     as HTMLElement;
+
+headerClose.addEventListener("click", () => closeChat());
 
 // ─── Teaser ──────────────────────────────────────────────────────────────────
 
