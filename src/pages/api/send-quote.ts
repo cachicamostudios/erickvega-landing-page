@@ -25,17 +25,17 @@ function buildEmail(lang: 'en' | 'pt'): string {
   const footer      = isEN ? 'All prices include equipment. Editing included as per package.' : 'Todos os valores incluem equipamento. Edição incluída conforme o pacote.';
 
   const rows = isEN ? [
-    ['Half day — 4h shooting',     '€350 – €450',  '€500 – €700'],
-    ['Full day — 8h shooting',     '€600 – €800',  '€900 – €1,200'],
-    ['Promo video — 1–2 min',      '€500 – €700',  '€800 – €1,100'],
-    ['Corporate video — 2–5 min',  '€700 – €1,000','€1,100 – €1,600'],
-    ['Hourly rate',                '€25 – €35/h',  '€45 – €65/h'],
+    ['Half day — 4h shooting',     '€350',   '€600'],
+    ['Full day — 8h shooting',     '€700',   '€1,200'],
+    ['Promo video — 1–2 min',      '€500',   '€1,000'],
+    ['Corporate video — 2–5 min',  '€800',   '€1,600'],
+    ['Hourly rate',                '€35/h',  '€65/h'],
   ] : [
-    ['Meio dia — 4h de filmagem',  '€350 – €450',  '€500 – €700'],
-    ['Dia completo — 8h',          '€600 – €800',  '€900 – €1.200'],
-    ['Vídeo promocional — 1–2 min','€500 – €700',  '€800 – €1.100'],
-    ['Vídeo corporativo — 2–5 min','€700 – €1.000','€1.100 – €1.600'],
-    ['Taxa horária',               '€25 – €35/h',  '€45 – €65/h'],
+    ['Meio dia — 4h de filmagem',  '€350',   '€600'],
+    ['Dia completo — 8h',          '€700',   '€1.200'],
+    ['Vídeo promocional — 1–2 min','€500',   '€1.000'],
+    ['Vídeo corporativo — 2–5 min','€800',   '€1.600'],
+    ['Taxa horária',               '€35/h',  '€65/h'],
   ];
 
   const services = isEN ? [
@@ -56,14 +56,14 @@ function buildEmail(lang: 'en' | 'pt'): string {
     ['Includes',                 'Professional equipment, editing and digital delivery.'],
     ['Travel costs',             'Not included. Applicable for locations outside Madeira.'],
     ['Revisions',                '1 round of revisions included per project.'],
-    ['Cancellation',             'Deposit is non-refundable if cancelled within 30 days of the event.'],
+    ['Cancellation',             'Deposit is non-refundable if cancelled within 15 days of the event.'],
   ] : [
     ['50% de sinal antecipado',    'Necessário para confirmar e garantir a data.'],
     ['50% restante antes da entrega', 'A pagar antes da entrega dos ficheiros finais.'],
     ['Inclui',                     'Equipamento profissional, edição e entrega digital.'],
     ['Deslocações',                'Não incluídas. Aplicável para locais fora da Madeira.'],
     ['Revisões',                   '1 ronda de revisões incluída por projeto.'],
-    ['Cancelamento',               'O sinal não é reembolsável se cancelado com menos de 30 dias do evento.'],
+    ['Cancelamento',               'O sinal não é reembolsável se cancelado com menos de 15 dias do evento.'],
   ];
 
   const tableRows = rows.map(([service, local, intl]) => `
