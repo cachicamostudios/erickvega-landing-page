@@ -175,8 +175,12 @@ function buildEmail(lang: 'en' | 'pt'): string {
 
 // ─── API Route ────────────────────────────────────────────────────────────────
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   const headers = { 'Content-Type': 'application/json' };
+
+  // Cloudflare Pages exposes dashboard env vars via locals.runtime.env at runtime.
+  // import.meta.env is used as fallback for local dev.
+  const cfEnv = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env ?? {};
 
   let body: { email?: string; lang?: string };
   try {
@@ -193,7 +197,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'Invalid email' }), { status: 400, headers });
   }
 
-  const apiKey = import.meta.env.RESEND_API_KEY;
+  const apiKey = cfEnv['RESEND_API_KEY'] ?? import.meta.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error('RESEND_API_KEY not set');
     return new Response(JSON.stringify({ error: 'Not configured' }), { status: 500, headers });
@@ -205,7 +209,7 @@ export const POST: APIRoute = async ({ request }) => {
     ? 'Erick Vega — Pricing Guide & Project Conditions'
     : 'Erick Vega — Tabela de Preços e Condições';
 
-  const fromAddress = import.meta.env.RESEND_FROM ?? 'Erick Vega <onboarding@resend.dev>';
+  const fromAddress = cfEnv['RESEND_FROM'] ?? import.meta.env.RESEND_FROM ?? 'Erick Vega <onboarding@resend.dev>';
 
   try {
     await resend.emails.send({
