@@ -1,0 +1,619 @@
+---
+// ChatBot.astro — Assistente de vendas para erickvega.xyz
+// Fluxo simplificado: apresentacao + recolha de email → Resend
+---
+
+<!-- ─── Teaser pill ─── -->
+<div id="chat-teaser" class="chat-teaser">Got something in mind?</div>
+
+<!-- ─── Toggle button ─── -->
+<button id="chat-toggle" class="chat-toggle" aria-label="Abrir chat">
+  <span class="chat-toggle-icon chat-icon-open">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </span>
+  <span class="chat-toggle-icon chat-icon-close" hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </span>
+</button>
+
+<!-- ─── Chat panel ─── -->
+<div id="chat-panel" class="chat-panel" aria-live="polite" hidden>
+  <div class="chat-header">
+    <div class="chat-header-avatar">Fr<span class="header-dot">*</span></div>
+    <div class="chat-header-info">
+      <p class="chat-header-name">Frame</p>
+      <p class="chat-header-status">Assistente de Erick Vega</p>
+    </div>
+  </div>
+  <div id="chat-messages" class="chat-messages"></div>
+  <div id="chat-options" class="chat-options"></div>
+</div>
+
+<style is:global>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+/* ─── Variables ─── */
+.chat-toggle,
+.chat-panel,
+.chat-teaser {
+  --chat-accent: #ff5c00;
+  --chat-bg: rgba(12, 12, 12, 0.96);
+  --chat-border: rgba(255, 255, 255, 0.08);
+  --chat-text: #f0f0f0;
+  --chat-muted: rgba(255, 255, 255, 0.4);
+  --chat-bubble-bot: rgba(255, 255, 255, 0.06);
+  --chat-nav-height: 52px;
+  --chat-gap: 16px;
+  --font: 'Roboto', sans-serif;
+}
+
+/* ─── Toggle button ─── */
+.chat-toggle {
+  position: fixed;
+  bottom: calc(var(--chat-nav-height) + 18px);
+  right: 24px;
+  z-index: 200;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--chat-accent);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(255, 92, 0, 0.45), 0 0 0 0 rgba(255, 92, 0, 0.4);
+  animation: toggleGlow 2.4s ease-in-out infinite;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 200ms ease;
+}
+.chat-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 32px rgba(255, 92, 0, 0.5);
+}
+.chat-toggle:active { transform: scale(0.95); }
+
+/* ─── Teaser pill ─── */
+.chat-teaser {
+  position: fixed;
+  bottom: calc(var(--chat-nav-height) + 30px);
+  right: 90px;
+  z-index: 200;
+  background: #1c1c1c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--font);
+  font-size: 12.5px;
+  letter-spacing: 0.2px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  animation: teaserIn 380ms 1800ms forwards;
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+.chat-teaser.teaser-gone {
+  opacity: 0 !important;
+  transform: translateX(6px);
+}
+@keyframes toggleGlow {
+  0%, 100% { box-shadow: 0 4px 24px rgba(255, 92, 0, 0.45), 0 0 0 0 rgba(255, 92, 0, 0.4); }
+  50%       { box-shadow: 0 4px 32px rgba(255, 92, 0, 0.65), 0 0 0 10px rgba(255, 92, 0, 0); }
+}
+
+@keyframes teaserIn {
+  from { opacity: 0; transform: translateX(6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.chat-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chat-toggle-icon[hidden] { display: none; }
+
+/* ─── Panel ─── */
+.chat-panel {
+  position: fixed;
+  bottom: calc(var(--chat-nav-height) + var(--chat-gap) + 60px);
+  right: 24px;
+  z-index: 199;
+  width: 340px;
+  max-height: 540px;
+  background: var(--chat-bg);
+  border: 1px solid var(--chat-border);
+  border-radius: 18px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--chat-border);
+  transform-origin: bottom right;
+  animation: chatOpen 220ms cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
+}
+.chat-panel[hidden] { display: none; }
+
+@keyframes chatOpen {
+  from { opacity: 0; transform: scale(0.9) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─── Header ─── */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--chat-border);
+  flex-shrink: 0;
+}
+.chat-header-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid var(--chat-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #e8e8e8;
+  flex-shrink: 0;
+}
+.header-dot { color: var(--chat-accent); }
+.chat-header-name {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--chat-text);
+  line-height: 1.2;
+}
+.chat-header-status {
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--chat-muted);
+  margin-top: 2px;
+}
+
+/* ─── Messages ─── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.chat-bubble {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--chat-text);
+  white-space: pre-line;
+  animation: bubbleIn 200ms ease forwards;
+  opacity: 0;
+}
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.chat-bubble.bot {
+  background: var(--chat-bubble-bot);
+  border: 1px solid var(--chat-border);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.chat-bubble.user {
+  background: var(--chat-accent);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* Typing indicator */
+.chat-bubble.typing {
+  background: var(--chat-bubble-bot);
+  border: 1px solid var(--chat-border);
+  align-self: flex-start;
+  padding: 12px 16px;
+}
+.typing-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chat-muted);
+  animation: typingDot 1.2s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%            { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ─── Options / email form area ─── */
+.chat-options {
+  padding: 10px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--chat-border);
+}
+.chat-opt-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--chat-text);
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 400;
+  text-align: left;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  line-height: 1.3;
+}
+.chat-opt-btn:hover {
+  background: rgba(255, 92, 0, 0.12);
+  border-color: rgba(255, 92, 0, 0.5);
+  color: #fff;
+}
+.chat-opt-btn:active { background: rgba(255, 92, 0, 0.2); }
+
+/* ─── Email input ─── */
+.chat-email-row {
+  display: flex;
+  gap: 8px;
+}
+.chat-email-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--chat-text);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  padding: 0 14px;
+  height: 44px;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+.chat-email-input::placeholder { color: rgba(255, 255, 255, 0.28); }
+.chat-email-input:focus { border-color: rgba(255, 92, 0, 0.6); }
+.chat-email-input.input-error { border-color: rgba(220, 60, 60, 0.7); }
+
+.chat-send-btn {
+  background: #ff5c00;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.chat-send-btn:hover   { opacity: 0.88; transform: translateX(2px); }
+.chat-send-btn:active  { opacity: 0.75; }
+.chat-send-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+/* ─── Responsive mobile ─── */
+@media (max-width: 480px) {
+  .chat-panel {
+    right: 0; left: 0;
+    bottom: calc(var(--chat-nav-height) + 8px);
+    width: 100%;
+    border-radius: 18px 18px 0 0;
+    max-height: 72vh;
+  }
+  .chat-toggle { right: 18px; }
+  .chat-teaser { right: 82px; font-size: 11.5px; padding: 7px 12px; }
+}
+</style>
+
+<script>
+const CONTACT_URL = "https://matrix.to/#/@erickvega:matrix.org";
+
+type Lang = 'pt' | 'en';
+type Step = {
+  message: string;
+  type?: 'email';
+  options?: Array<{ label: string; next?: string; action?: 'contact' | 'start' }>;
+};
+
+// ─── Flows ───────────────────────────────────────────────────────────────────
+
+const flowPT: Record<string, Step> = {
+  start: {
+    message: "Filmmaker & editor baseado na Madeira.\n\nQuer receber a tabela de precos por email?",
+    options: [
+      { label: "Sim, enviem-me os detalhes", next: "email_collect" },
+      { label: "Contactar diretamente",       action: "contact"     },
+    ],
+  },
+  email_collect: {
+    message: "Escreva o seu email e enviamos de imediato a tabela de precos completa e as condicoes do projeto.",
+    type: "email",
+  },
+  email_sent: {
+    message: "Feito. Verifique a sua caixa de entrada. Respondemos a todos os pedidos em menos de 24h.",
+    options: [
+      { label: "Contactar diretamente", action: "contact" },
+      { label: "← Voltar ao inicio",    action: "start"   },
+    ],
+  },
+  email_error: {
+    message: "Algo correu mal ao enviar. Tente novamente ou contacte diretamente.",
+    options: [
+      { label: "Tentar novamente",      next: "email_collect" },
+      { label: "Contactar diretamente", action: "contact"     },
+    ],
+  },
+};
+
+const flowEN: Record<string, Step> = {
+  start: {
+    message: "Filmmaker & editor based in Madeira.\n\nWant to receive the pricing guide by email?",
+    options: [
+      { label: "Yes, send me the details", next: "email_collect" },
+      { label: "Contact directly",          action: "contact"     },
+    ],
+  },
+  email_collect: {
+    message: "Enter your email and we will send you our complete pricing guide and project conditions right away.",
+    type: "email",
+  },
+  email_sent: {
+    message: "Done. Check your inbox shortly. We reply to all inquiries within 24h.",
+    options: [
+      { label: "Contact directly", action: "contact" },
+      { label: "← Start over",     action: "start"   },
+    ],
+  },
+  email_error: {
+    message: "Something went wrong. Please try again or contact directly.",
+    options: [
+      { label: "Try again",        next: "email_collect" },
+      { label: "Contact directly", action: "contact"     },
+    ],
+  },
+};
+
+// ─── State ───────────────────────────────────────────────────────────────────
+
+let isOpen     = false;
+let started    = false;
+let teaserGone = false;
+let lang: Lang = 'pt';
+let flow: Record<string, Step> = flowPT;
+
+// ─── DOM refs ────────────────────────────────────────────────────────────────
+
+const toggle   = document.getElementById("chat-toggle")   as HTMLButtonElement;
+const panel    = document.getElementById("chat-panel")    as HTMLDivElement;
+const messages = document.getElementById("chat-messages") as HTMLDivElement;
+const optWrap  = document.getElementById("chat-options")  as HTMLDivElement;
+const teaser   = document.getElementById("chat-teaser")   as HTMLDivElement;
+const iconOpen  = toggle.querySelector(".chat-icon-open")  as HTMLElement;
+const iconClose = toggle.querySelector(".chat-icon-close") as HTMLElement;
+
+// ─── Teaser ──────────────────────────────────────────────────────────────────
+
+function hideTeaser() {
+  if (teaserGone) return;
+  teaserGone = true;
+  teaser.classList.add("teaser-gone");
+}
+// teaser stays visible until chat is opened
+
+// ─── Open / close ────────────────────────────────────────────────────────────
+
+function openChat() {
+  isOpen = true;
+  panel.hidden = false;
+  iconOpen.hidden  = true;
+  iconClose.hidden = false;
+  hideTeaser();
+  if (!started) { started = true; showLangPicker(); }
+}
+
+function closeChat() {
+  isOpen = false;
+  panel.hidden = true;
+  iconOpen.hidden  = false;
+  iconClose.hidden = true;
+}
+
+toggle.addEventListener("click", () => isOpen ? closeChat() : openChat());
+
+// ─── Language picker ─────────────────────────────────────────────────────────
+
+function showLangPicker() {
+  const typing = addTyping();
+  setTimeout(() => {
+    typing.remove();
+    addBubble("Olá / Hi — sou o Frame, assistente de Erick Vega, filmmaker & editor na Madeira.", "bot");
+    const typing2 = addTyping();
+    setTimeout(() => {
+      typing2.remove();
+      addBubble("Choose your language / Escolha o idioma.", "bot");
+      clearOptions();
+      [
+        { label: "Português", l: 'pt' as Lang, f: flowPT },
+        { label: "English",   l: 'en' as Lang, f: flowEN },
+      ].forEach(({ label, l, f }) => {
+        optWrap.appendChild(makeOptBtn(label, () => {
+          lang = l;
+          flow = f;
+          addBubble(label, "user");
+          clearOptions();
+          goTo("start");
+        }));
+      });
+    }, 800);
+  }, 600);
+}
+
+// ─── Bubble helpers ──────────────────────────────────────────────────────────
+
+function addBubble(text: string, role: "bot" | "user") {
+  const div = document.createElement("div");
+  div.className = `chat-bubble ${role}`;
+  div.textContent = text;
+  messages.appendChild(div);
+  scrollBottom();
+}
+
+function addTyping(): HTMLElement {
+  const div = document.createElement("div");
+  div.className = "chat-bubble typing";
+  div.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+  messages.appendChild(div);
+  scrollBottom();
+  return div;
+}
+
+function scrollBottom() {
+  requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
+}
+
+// ─── Options ─────────────────────────────────────────────────────────────────
+
+function clearOptions() { optWrap.innerHTML = ""; }
+
+function makeOptBtn(label: string, onClick: () => void): HTMLButtonElement {
+  const btn = document.createElement("button");
+  btn.className = "chat-opt-btn";
+  btn.textContent = label;
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+function renderOptions(step: Step) {
+  clearOptions();
+  if (step.type === "email") { renderEmailInput(); return; }
+  step.options?.forEach(opt => {
+    optWrap.appendChild(makeOptBtn(opt.label, () => handleOption(opt)));
+  });
+}
+
+// ─── Email input ─────────────────────────────────────────────────────────────
+
+function renderEmailInput() {
+  const row = document.createElement("div");
+  row.className = "chat-email-row";
+
+  const input = document.createElement("input");
+  input.type         = "email";
+  input.placeholder  = lang === "en" ? "your@email.com" : "o.seu@email.com";
+  input.className    = "chat-email-input";
+  input.autocomplete = "email";
+
+  const btn = document.createElement("button");
+  btn.className = "chat-send-btn";
+  btn.setAttribute("aria-label", lang === "en" ? "Send" : "Enviar");
+  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+
+  const submit = () => handleEmailSubmit(input.value.trim(), btn, input);
+  btn.addEventListener("click", submit);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+
+  row.appendChild(input);
+  row.appendChild(btn);
+  optWrap.appendChild(row);
+  setTimeout(() => input.focus(), 80);
+}
+
+async function handleEmailSubmit(email: string, btn: HTMLButtonElement, input: HTMLInputElement) {
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    input.classList.add("input-error");
+    input.focus();
+    setTimeout(() => input.classList.remove("input-error"), 1200);
+    return;
+  }
+
+  addBubble(email, "user");
+  clearOptions();
+  btn.disabled = true;
+
+  const typing = addTyping();
+
+  try {
+    const res = await fetch("/api/send-quote", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ email, lang }),
+    });
+    typing.remove();
+    goTo(res.ok ? "email_sent" : "email_error");
+  } catch {
+    typing.remove();
+    goTo("email_error");
+  }
+}
+
+// ─── Option handler ──────────────────────────────────────────────────────────
+
+function handleOption(opt: NonNullable<Step["options"]>[number]) {
+  addBubble(opt.label, "user");
+  clearOptions();
+
+  if (opt.action === "contact") {
+    window.open(CONTACT_URL, "_blank", "noopener,noreferrer");
+    const msg = lang === "en" ? "Opening contact. Talk soon." : "A abrir contacto. Ate ja.";
+    setTimeout(() => { addBubble(msg, "bot"); setTimeout(() => goTo("start"), 2200); }, 300);
+    return;
+  }
+  if (opt.action === "start") { goTo("start"); return; }
+  if (opt.next) goTo(opt.next);
+}
+
+// ─── Navigation ──────────────────────────────────────────────────────────────
+
+function goTo(stepKey: string) {
+  const step = flow[stepKey];
+  if (!step) return;
+  const typing = addTyping();
+  const delay  = 500 + Math.min(step.message.length * 2, 800);
+  setTimeout(() => {
+    typing.remove();
+    addBubble(step.message, "bot");
+    renderOptions(step);
+  }, delay);
+}
+</script>
