@@ -5,9 +5,10 @@ interface Props {
   title: string;
   date: Date;
   description?: string;
+  image?: string;
 }
 
-const { title, date, description } = Astro.props;
+const { title, date, description, image } = Astro.props;
 
 const dateStr = date.toLocaleDateString('es-ES', {
   year: 'numeric',
@@ -16,7 +17,7 @@ const dateStr = date.toLocaleDateString('es-ES', {
 });
 ---
 
-<Layout title={`${title} — proyecto-unknown`} description={description}>
+<Layout title={`${title} — Erick Vega`} description={description} image={image}>
   <div class="post-topbar">
     <a href="/blog" class="post-back">← Blog</a>
   </div>

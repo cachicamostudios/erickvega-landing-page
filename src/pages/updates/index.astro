@@ -6,7 +6,10 @@ const updates = (await getCollection('updates', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<Layout title="Updates — proyecto-unknown">
+<Layout
+  title="Updates — Erick Vega"
+  description="Actualizaciones y novedades de Erick Vega."
+>
   <div class="topbar">
     <div class="topbar-inner">
       <a href="/" class="topbar-back">← Volver</a>
