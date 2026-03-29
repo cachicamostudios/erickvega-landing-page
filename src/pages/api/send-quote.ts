@@ -28,14 +28,14 @@ function buildEmail(lang: 'en' | 'pt'): string {
 
   const rows = isEN ? [
     ['Half day — 4h shooting',     '€450',   '€750'],
-    ['Full day — 8h shooting',     '€860',   '€1,370'],
+    ['Full day — 8h filming',       '€860',   '€1,370'],
     ['Promo video — 1–2 min',      '€620',   '€1,130'],
     ['Corporate video — 2–5 min',  '€980',   '€1,840'],
     ['Hourly rate (shooting)',      '€90/h',  '€130/h'],
     ['Editing — hourly rate',       '€45/h',  '€75/h'],
   ] : [
     ['Meio dia — 4h de filmagem',  '€450',   '€750'],
-    ['Dia completo — 8h',          '€860',   '€1.370'],
+    ['Dia completo — 8h de filmagem','€860',  '€1.370'],
     ['Vídeo promocional — 1–2 min','€620',   '€1.130'],
     ['Vídeo corporativo — 2–5 min','€980',   '€1.840'],
     ['Taxa horária (filmagem)',     '€90/h',  '€130/h'],
