@@ -22,20 +22,24 @@ function buildEmail(lang: 'en' | 'pt'): string {
     : 'Responda a este email ou contacte o Erick diretamente para confirmar a sua reserva.';
   const colLocal    = isEN ? 'Local (PT)' : 'Local (PT)';
   const colIntl     = isEN ? 'International' : 'Internacional';
-  const footer      = isEN ? 'All prices include equipment. Editing included as per package.' : 'Todos os valores incluem equipamento. Edição incluída conforme o pacote.';
+  const footer      = isEN
+    ? 'All prices include equipment. Editing is included in Promo Video and Corporate Video packages. Shooting-only packages (half day, full day, hourly rate) do not include editing — additional editing billed at €45/h (PT) or €75/h (international).'
+    : 'Todos os valores incluem equipamento. A edição está incluída nos pacotes de Vídeo Promocional e Vídeo Corporativo. Os pacotes de filmagem (meio dia, dia completo, taxa horária) não incluem edição — edição adicional faturada a €45/h (PT) ou €75/h (internacional).';
 
   const rows = isEN ? [
-    ['Half day — 4h shooting',     '€350',   '€600'],
-    ['Full day — 8h shooting',     '€700',   '€1,200'],
-    ['Promo video — 1–2 min',      '€500',   '€1,000'],
-    ['Corporate video — 2–5 min',  '€800',   '€1,600'],
-    ['Hourly rate',                '€35/h',  '€65/h'],
+    ['Half day — 4h shooting',     '€450',   '€750'],
+    ['Full day — 8h shooting',     '€860',   '€1,370'],
+    ['Promo video — 1–2 min',      '€620',   '€1,130'],
+    ['Corporate video — 2–5 min',  '€980',   '€1,840'],
+    ['Hourly rate (shooting)',      '€90/h',  '€130/h'],
+    ['Editing — hourly rate',       '€45/h',  '€75/h'],
   ] : [
-    ['Meio dia — 4h de filmagem',  '€350',   '€600'],
-    ['Dia completo — 8h',          '€700',   '€1.200'],
-    ['Vídeo promocional — 1–2 min','€500',   '€1.000'],
-    ['Vídeo corporativo — 2–5 min','€800',   '€1.600'],
-    ['Taxa horária',               '€35/h',  '€65/h'],
+    ['Meio dia — 4h de filmagem',  '€450',   '€750'],
+    ['Dia completo — 8h',          '€860',   '€1.370'],
+    ['Vídeo promocional — 1–2 min','€620',   '€1.130'],
+    ['Vídeo corporativo — 2–5 min','€980',   '€1.840'],
+    ['Taxa horária (filmagem)',     '€90/h',  '€130/h'],
+    ['Edição — taxa horária',       '€45/h',  '€75/h'],
   ];
 
   const services = isEN ? [
