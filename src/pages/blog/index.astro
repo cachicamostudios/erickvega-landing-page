@@ -33,7 +33,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
           });
           return (
             <li class="blog-item">
-              <a href={`/blog/${post.slug}`} class="blog-link">
+              <a href={`/blog/${post.id}`} class="blog-link">
                 <time class="blog-date">{dateStr}</time>
                 <span class="blog-title">{post.data.title}</span>
                 {post.data.description && (

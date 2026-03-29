@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 const updates = (await getCollection('updates', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -26,7 +26,7 @@ const updates = (await getCollection('updates', ({ data }) => !data.draft))
     ) : (
       <div class="updates-grid">
         {updates.map(async (update) => {
-          const { Content } = await update.render();
+          const { Content } = await render(update);
           const dateStr = update.data.date.toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
