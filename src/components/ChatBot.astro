@@ -374,7 +374,7 @@
 <script>
 const CONTACT_URL = "https://matrix.to/#/@erickvega:matrix.org";
 
-type Lang = 'pt' | 'en';
+type Lang = 'pt' | 'en' | 'es';
 type Step = {
   message: string;
   type?: 'email';
@@ -435,6 +435,34 @@ const flowEN: Record<string, Step> = {
     options: [
       { label: "Try again",        next: "email_collect" },
       { label: "Contact directly", action: "contact"     },
+    ],
+  },
+};
+
+const flowES: Record<string, Step> = {
+  start: {
+    message: "Filmmaker & editor afincado en Madeira.\n\n¿Quieres hablar sobre tu proyecto?",
+    options: [
+      { label: "Sí, cuéntame más",    next: "email_collect" },
+      { label: "Contactar directamente", action: "contact"  },
+    ],
+  },
+  email_collect: {
+    message: "Escribe tu email y te contacto para agendar una reunión sobre tu proyecto.",
+    type: "email",
+  },
+  email_sent: {
+    message: "Listo. Revisa tu bandeja de entrada en breve. Respondemos todas las solicitudes en menos de 24h.",
+    options: [
+      { label: "Contactar directamente", action: "contact" },
+      { label: "← Volver al inicio",     action: "start"   },
+    ],
+  },
+  email_error: {
+    message: "Algo salió mal al enviar. Inténtalo de nuevo o contacta directamente.",
+    options: [
+      { label: "Intentar de nuevo",      next: "email_collect" },
+      { label: "Contactar directamente", action: "contact"     },
     ],
   },
 };
@@ -501,11 +529,12 @@ function showLangPicker() {
     const typing2 = addTyping();
     setTimeout(() => {
       typing2.remove();
-      addBubble("Choose your language / Escolha o idioma.", "bot");
+      addBubble("Choose your language / Escolha o idioma / Elige tu idioma.", "bot");
       clearOptions();
       [
         { label: "Português", l: 'pt' as Lang, f: flowPT },
         { label: "English",   l: 'en' as Lang, f: flowEN },
+        { label: "Español",   l: 'es' as Lang, f: flowES },
       ].forEach(({ label, l, f }) => {
         optWrap.appendChild(makeOptBtn(label, () => {
           lang = l;
@@ -570,7 +599,7 @@ function renderEmailInput() {
 
   const input = document.createElement("input");
   input.type         = "email";
-  input.placeholder  = lang === "en" ? "your@email.com" : "o.seu@email.com";
+  input.placeholder  = lang === "en" ? "your@email.com" : lang === "es" ? "tu@email.com" : "o.seu@email.com";
   input.className    = "chat-email-input";
   input.autocomplete = "email";
 
@@ -625,7 +654,7 @@ function handleOption(opt: NonNullable<Step["options"]>[number]) {
 
   if (opt.action === "contact") {
     window.open(CONTACT_URL, "_blank", "noopener,noreferrer");
-    const msg = lang === "en" ? "Opening contact. Talk soon." : "A abrir contacto. Ate ja.";
+    const msg = lang === "en" ? "Opening contact. Talk soon." : lang === "es" ? "Abriendo contacto. Hablamos pronto." : "A abrir contacto. Ate ja.";
     setTimeout(() => { addBubble(msg, "bot"); setTimeout(() => goTo("start"), 2200); }, 300);
     return;
   }

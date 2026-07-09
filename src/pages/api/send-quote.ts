@@ -5,31 +5,48 @@ export const prerender = false;
 
 // ─── Email HTML templates ─────────────────────────────────────────────────────
 
-function buildEmail(lang: 'en' | 'pt'): string {
-  const isEN = lang === 'en';
+function buildEmail(lang: 'en' | 'pt' | 'es'): string {
+  const t = <T,>(m: { en: T; pt: T; es: T }): T => m[lang];
 
-  const heading     = isEN ? 'Thank you for your inquiry' : 'Obrigado pelo seu contacto';
-  const intro       = isEN
-    ? 'Thanks for reaching out. We have received the information you provided and will get in touch with you shortly.'
-    : 'Obrigado pelo seu contacto. Recebemos os dados que nos forneceu e entraremos em contacto consigo em breve.';
+  const heading   = t({
+    en: 'Thank you for your inquiry',
+    pt: 'Obrigado pelo seu contacto',
+    es: 'Gracias por tu contacto',
+  });
+  const intro     = t({
+    en: 'Thanks for reaching out. We have received the information you provided and will get in touch with you shortly.',
+    pt: 'Obrigado pelo seu contacto. Recebemos os dados que nos forneceu e entraremos em contacto consigo em breve.',
+    es: 'Gracias por tu interés. Hemos recibido los datos que nos proporcionaste y pronto nos pondremos en contacto contigo.',
+  });
+  const servicesH = t({ en: 'Services', pt: 'Serviços', es: 'Servicios' });
+  const ctaH      = t({ en: 'In the meantime', pt: 'Entretanto', es: 'Mientras tanto' });
+  const ctaBody   = t({
+    en: 'You can also reply to this email or contact Erick directly anytime.',
+    pt: 'Pode também responder a este email ou contactar o Erick diretamente a qualquer momento.',
+    es: 'También puedes responder a este email o contactar a Erick directamente cuando quieras.',
+  });
+  const ctaBtn    = t({ en: 'Contact Erick', pt: 'Contactar o Erick', es: 'Contactar a Erick' });
 
-  const servicesH   = isEN ? 'Services' : 'Serviços';
-  const ctaH        = isEN ? 'In the meantime' : 'Entretanto';
-  const ctaBody     = isEN
-    ? 'You can also reply to this email or contact Erick directly anytime.'
-    : 'Pode também responder a este email ou contactar o Erick diretamente a qualquer momento.';
-
-  const services = isEN ? [
-    'Wedding films',
-    'Event &amp; party coverage',
-    'Promotional videos (tourism, business)',
-    'Corporate videos',
-  ] : [
-    'Filmes de casamento',
-    'Cobertura de eventos e festas',
-    'Vídeos promocionais (turismo, negócios)',
-    'Vídeos corporativos',
-  ];
+  const services = t({
+    en: [
+      'Wedding films',
+      'Event &amp; party coverage',
+      'Promotional videos (tourism, business)',
+      'Corporate videos',
+    ],
+    pt: [
+      'Filmes de casamento',
+      'Cobertura de eventos e festas',
+      'Vídeos promocionais (turismo, negócios)',
+      'Vídeos corporativos',
+    ],
+    es: [
+      'Vídeos de boda',
+      'Cobertura de eventos y fiestas',
+      'Vídeos promocionales (turismo, negocios)',
+      'Vídeos corporativos',
+    ],
+  });
 
   const serviceItems = services.map(s =>
     `<li style="margin:6px 0;font-size:14px;color:#333;">${s}</li>`
@@ -78,7 +95,7 @@ function buildEmail(lang: 'en' | 'pt'): string {
             <p style="margin:0 0 20px;font-size:14px;color:#555;">${ctaBody}</p>
             <a href="mailto:hello@erickvega.xyz"
                style="display:inline-block;background:#ff5c00;color:#ffffff;font-size:13px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:6px;letter-spacing:0.3px;">
-              ${isEN ? 'Contact Erick' : 'Contactar o Erick'}
+              ${ctaBtn}
             </a>
           </td>
         </tr>
@@ -114,7 +131,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const { email, lang = 'en' } = body;
-  const normalizedLang: 'en' | 'pt' = lang === 'pt' ? 'pt' : 'en';
+  const normalizedLang: 'en' | 'pt' | 'es' =
+    lang === 'pt' ? 'pt' : lang === 'es' ? 'es' : 'en';
 
   // Validate email
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -129,8 +147,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   const resend = new Resend(apiKey);
 
-  const subject = normalizedLang === 'en'
-    ? 'Your inquiry — Erick Vega, Filmmaker'
+  const subject =
+    normalizedLang === 'en' ? 'Your inquiry — Erick Vega, Filmmaker'
+    : normalizedLang === 'es' ? 'Gracias por tu contacto — Erick Vega'
     : 'Obrigado pelo teu contacto — Erick Vega';
 
   const fromAddress = cfEnv['RESEND_FROM'] ?? import.meta.env.RESEND_FROM ?? 'Erick Vega <onboarding@resend.dev>';
