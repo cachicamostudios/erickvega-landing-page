@@ -67,7 +67,7 @@ function buildEmail(lang: 'en' | 'pt' | 'es'): string {
               Erick Vega<span style="color:#ff5c00;">*</span>
             </p>
             <p style="margin:6px 0 0;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);">
-              Filmmaker &amp; Editor · Madeira
+              Filmmaker &amp; Editor
             </p>
           </td>
         </tr>
@@ -103,7 +103,7 @@ function buildEmail(lang: 'en' | 'pt' | 'es'): string {
         <!-- Footer -->
         <tr>
           <td style="padding:20px 40px 32px;border-top:1px solid #eee;">
-            <p style="margin:0;font-size:11px;color:#bbb;">erickvega.xyz · Madeira, Portugal</p>
+            <p style="margin:0;font-size:11px;color:#bbb;">erickvega.xyz</p>
           </td>
         </tr>
 

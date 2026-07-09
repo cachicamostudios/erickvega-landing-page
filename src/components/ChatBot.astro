@@ -385,7 +385,7 @@ type Step = {
 
 const flowPT: Record<string, Step> = {
   start: {
-    message: "Filmmaker & editor baseado na Madeira.\n\nQuer falar sobre o seu projeto?",
+    message: "Filmmaker & editor.\n\nQuer falar sobre o seu projeto?",
     options: [
       { label: "Sim, quero saber mais", next: "email_collect" },
       { label: "Contactar diretamente", action: "contact"     },
@@ -413,7 +413,7 @@ const flowPT: Record<string, Step> = {
 
 const flowEN: Record<string, Step> = {
   start: {
-    message: "Filmmaker & editor based in Madeira.\n\nWant to talk about your project?",
+    message: "Filmmaker & editor.\n\nWant to talk about your project?",
     options: [
       { label: "Yes, tell me more", next: "email_collect" },
       { label: "Contact directly",  action: "contact"     },
@@ -441,7 +441,7 @@ const flowEN: Record<string, Step> = {
 
 const flowES: Record<string, Step> = {
   start: {
-    message: "Filmmaker & editor afincado en Madeira.\n\n¿Quieres hablar sobre tu proyecto?",
+    message: "Filmmaker & editor.\n\n¿Quieres hablar sobre tu proyecto?",
     options: [
       { label: "Sí, cuéntame más",    next: "email_collect" },
       { label: "Contactar directamente", action: "contact"  },
@@ -525,7 +525,7 @@ function showLangPicker() {
   const typing = addTyping();
   setTimeout(() => {
     typing.remove();
-    addBubble("Olá / Hi — sou o Frame, assistente de Erick Vega, filmmaker & editor na Madeira.", "bot");
+    addBubble("Olá / Hi — sou o Frame, assistente de Erick Vega, filmmaker & editor.", "bot");
     const typing2 = addTyping();
     setTimeout(() => {
       typing2.remove();
