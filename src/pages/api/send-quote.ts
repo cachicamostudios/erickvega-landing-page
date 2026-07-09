@@ -10,15 +10,14 @@ function buildEmail(lang: 'en' | 'pt'): string {
 
   const heading     = isEN ? 'Thank you for your inquiry' : 'Obrigado pelo seu contacto';
   const intro       = isEN
-    ? 'Thanks for reaching out. I have received your request and will get back to you shortly to arrange a meeting where we can go over your project and put together a quote tailored to it.'
-    : 'Obrigado pelo seu contacto. Recebi o seu pedido e entrarei em contacto em breve para marcarmos uma reunião onde falamos sobre o seu projeto e preparamos um orçamento à medida.';
+    ? 'Thanks for reaching out. We have received the information you provided and will get in touch with you shortly.'
+    : 'Obrigado pelo seu contacto. Recebemos os dados que nos forneceu e entraremos em contacto consigo em breve.';
 
   const servicesH   = isEN ? 'Services' : 'Serviços';
-  const condH       = isEN ? 'Project Conditions' : 'Condições do Projeto';
-  const ctaH        = isEN ? 'Ready to start?' : 'Pronto para começar?';
+  const ctaH        = isEN ? 'In the meantime' : 'Entretanto';
   const ctaBody     = isEN
-    ? 'Reply to this email or contact Erick directly to arrange your meeting.'
-    : 'Responda a este email ou contacte o Erick diretamente para marcar a sua reunião.';
+    ? 'You can also reply to this email or contact Erick directly anytime.'
+    : 'Pode também responder a este email ou contactar o Erick diretamente a qualquer momento.';
 
   const services = isEN ? [
     'Wedding films',
@@ -31,28 +30,6 @@ function buildEmail(lang: 'en' | 'pt'): string {
     'Vídeos promocionais (turismo, negócios)',
     'Vídeos corporativos',
   ];
-
-  const conditions = isEN ? [
-    ['50% deposit upfront',      'Required to confirm and secure the booking date.'],
-    ['50% balance before delivery', 'Due before the final files are delivered.'],
-    ['Includes',                 'Professional equipment, editing and digital delivery.'],
-    ['Travel costs',             'Not included. Applicable for locations outside Madeira.'],
-    ['Revisions',                '1 round of revisions included per project.'],
-    ['Cancellation',             'Deposit is non-refundable if cancelled within 15 days of the event.'],
-  ] : [
-    ['50% de sinal antecipado',    'Necessário para confirmar e garantir a data.'],
-    ['50% restante antes da entrega', 'A pagar antes da entrega dos ficheiros finais.'],
-    ['Inclui',                     'Equipamento profissional, edição e entrega digital.'],
-    ['Deslocações',                'Não incluídas. Aplicável para locais fora da Madeira.'],
-    ['Revisões',                   '1 ronda de revisões incluída por projeto.'],
-    ['Cancelamento',               'O sinal não é reembolsável se cancelado com menos de 15 dias do evento.'],
-  ];
-
-  const condRows = conditions.map(([label, desc]) => `
-    <tr>
-      <td style="padding:10px 16px;border-bottom:1px solid #eee;font-size:13px;font-weight:600;color:#111;white-space:nowrap;vertical-align:top;">${label}</td>
-      <td style="padding:10px 16px;border-bottom:1px solid #eee;font-size:13px;color:#444;">${desc}</td>
-    </tr>`).join('');
 
   const serviceItems = services.map(s =>
     `<li style="margin:6px 0;font-size:14px;color:#333;">${s}</li>`
@@ -91,16 +68,6 @@ function buildEmail(lang: 'en' | 'pt'): string {
           <td style="padding:28px 40px 0;">
             <p style="margin:0 0 12px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ff5c00;">${servicesH}</p>
             <ul style="margin:0;padding:0 0 0 20px;">${serviceItems}</ul>
-          </td>
-        </tr>
-
-        <!-- Conditions -->
-        <tr>
-          <td style="padding:28px 40px 0;">
-            <p style="margin:0 0 12px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ff5c00;">${condH}</p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #eee;border-radius:6px;overflow:hidden;">
-              <tbody>${condRows}</tbody>
-            </table>
           </td>
         </tr>
 
