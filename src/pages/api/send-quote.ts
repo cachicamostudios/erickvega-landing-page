@@ -8,39 +8,17 @@ export const prerender = false;
 function buildEmail(lang: 'en' | 'pt'): string {
   const isEN = lang === 'en';
 
-  const heading     = isEN ? 'Pricing Guide &amp; Project Conditions' : 'Tabela de Preços &amp; Condições do Projeto';
+  const heading     = isEN ? 'Thank you for your inquiry' : 'Obrigado pelo seu contacto';
   const intro       = isEN
-    ? 'Thank you for your interest. Below you will find our complete pricing and the standard conditions that apply to all projects.'
-    : 'Obrigado pelo seu interesse. Em baixo encontra a nossa tabela de preços completa e as condições que se aplicam a todos os projetos.';
+    ? 'Thanks for reaching out. I have received your request and will get back to you shortly to arrange a meeting where we can go over your project and put together a quote tailored to it.'
+    : 'Obrigado pelo seu contacto. Recebi o seu pedido e entrarei em contacto em breve para marcarmos uma reunião onde falamos sobre o seu projeto e preparamos um orçamento à medida.';
 
   const servicesH   = isEN ? 'Services' : 'Serviços';
-  const pricingH    = isEN ? 'Pricing' : 'Preços';
   const condH       = isEN ? 'Project Conditions' : 'Condições do Projeto';
   const ctaH        = isEN ? 'Ready to start?' : 'Pronto para começar?';
   const ctaBody     = isEN
-    ? 'Reply to this email or contact Erick directly to confirm your booking.'
-    : 'Responda a este email ou contacte o Erick diretamente para confirmar a sua reserva.';
-  const colLocal    = isEN ? 'Local (PT)' : 'Local (PT)';
-  const colIntl     = isEN ? 'International' : 'Internacional';
-  const footer      = isEN
-    ? 'All prices include equipment. Editing is included in Promo Video and Corporate Video packages. Shooting-only packages (half day, full day, hourly rate) do not include editing — additional editing billed at €45/h (PT) or €75/h (international).'
-    : 'Todos os valores incluem equipamento. A edição está incluída nos pacotes de Vídeo Promocional e Vídeo Corporativo. Os pacotes de filmagem (meio dia, dia completo, taxa horária) não incluem edição — edição adicional faturada a €45/h (PT) ou €75/h (internacional).';
-
-  const rows = isEN ? [
-    ['Half day — 4h shooting',     '€450',   '€750'],
-    ['Full day — 8h filming',       '€860',   '€1,370'],
-    ['Promo video — 1–2 min',      '€620',   '€1,130'],
-    ['Corporate video — 2–5 min',  '€980',   '€1,840'],
-    ['Hourly rate (shooting)',      '€90/h',  '€130/h'],
-    ['Editing — hourly rate',       '€45/h',  '€75/h'],
-  ] : [
-    ['Meio dia — 4h de filmagem',  '€450',   '€750'],
-    ['Dia completo — 8h de filmagem','€860',  '€1.370'],
-    ['Vídeo promocional — 1–2 min','€620',   '€1.130'],
-    ['Vídeo corporativo — 2–5 min','€980',   '€1.840'],
-    ['Taxa horária (filmagem)',     '€90/h',  '€130/h'],
-    ['Edição — taxa horária',       '€45/h',  '€75/h'],
-  ];
+    ? 'Reply to this email or contact Erick directly to arrange your meeting.'
+    : 'Responda a este email ou contacte o Erick diretamente para marcar a sua reunião.';
 
   const services = isEN ? [
     'Wedding films',
@@ -69,13 +47,6 @@ function buildEmail(lang: 'en' | 'pt'): string {
     ['Revisões',                   '1 ronda de revisões incluída por projeto.'],
     ['Cancelamento',               'O sinal não é reembolsável se cancelado com menos de 15 dias do evento.'],
   ];
-
-  const tableRows = rows.map(([service, local, intl]) => `
-    <tr>
-      <td style="padding:10px 16px;border-bottom:1px solid #eee;font-size:14px;color:#222;">${service}</td>
-      <td style="padding:10px 16px;border-bottom:1px solid #eee;font-size:14px;color:#222;text-align:center;">${local}</td>
-      <td style="padding:10px 16px;border-bottom:1px solid #eee;font-size:14px;color:#222;text-align:center;">${intl}</td>
-    </tr>`).join('');
 
   const condRows = conditions.map(([label, desc]) => `
     <tr>
@@ -120,24 +91,6 @@ function buildEmail(lang: 'en' | 'pt'): string {
           <td style="padding:28px 40px 0;">
             <p style="margin:0 0 12px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ff5c00;">${servicesH}</p>
             <ul style="margin:0;padding:0 0 0 20px;">${serviceItems}</ul>
-          </td>
-        </tr>
-
-        <!-- Pricing table -->
-        <tr>
-          <td style="padding:28px 40px 0;">
-            <p style="margin:0 0 12px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ff5c00;">${pricingH}</p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #eee;border-radius:6px;overflow:hidden;">
-              <thead>
-                <tr style="background:#f7f7f7;">
-                  <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;"></th>
-                  <th style="padding:10px 16px;text-align:center;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;">${colLocal}</th>
-                  <th style="padding:10px 16px;text-align:center;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;">${colIntl}</th>
-                </tr>
-              </thead>
-              <tbody>${tableRows}</tbody>
-            </table>
-            <p style="margin:10px 0 0;font-size:12px;color:#999;">${footer}</p>
           </td>
         </tr>
 

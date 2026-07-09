@@ -385,14 +385,14 @@ type Step = {
 
 const flowPT: Record<string, Step> = {
   start: {
-    message: "Filmmaker & editor baseado na Madeira.\n\nQuer receber a tabela de precos por email?",
+    message: "Filmmaker & editor baseado na Madeira.\n\nQuer falar sobre o seu projeto?",
     options: [
-      { label: "Sim, enviem-me os detalhes", next: "email_collect" },
-      { label: "Contactar diretamente",       action: "contact"     },
+      { label: "Sim, quero saber mais", next: "email_collect" },
+      { label: "Contactar diretamente", action: "contact"     },
     ],
   },
   email_collect: {
-    message: "Escreva o seu email e enviamos de imediato a tabela de precos completa e as condicoes do projeto.",
+    message: "Escreva o seu email e entro em contacto para marcarmos uma reuniao sobre o seu projeto.",
     type: "email",
   },
   email_sent: {
@@ -413,14 +413,14 @@ const flowPT: Record<string, Step> = {
 
 const flowEN: Record<string, Step> = {
   start: {
-    message: "Filmmaker & editor based in Madeira.\n\nWant to receive the pricing guide by email?",
+    message: "Filmmaker & editor based in Madeira.\n\nWant to talk about your project?",
     options: [
-      { label: "Yes, send me the details", next: "email_collect" },
-      { label: "Contact directly",          action: "contact"     },
+      { label: "Yes, tell me more", next: "email_collect" },
+      { label: "Contact directly",  action: "contact"     },
     ],
   },
   email_collect: {
-    message: "Enter your email and we will send you our complete pricing guide and project conditions right away.",
+    message: "Enter your email and I will get back to you to arrange a meeting about your project.",
     type: "email",
   },
   email_sent: {
